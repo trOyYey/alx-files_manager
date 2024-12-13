@@ -1,18 +1,24 @@
 import dbClient from './db';
-import sha1 from 'sha1';
 
 class UsersCollection {
-static async createUser({ email, password }) {
+  static async createUser({ email, password }) {
     const collection = dbClient.getCollection('users');
-    const newUser = { email, password: sha1(password) };
+    const newUser = { email, password };
     const commandResult = await collection.insertOne(newUser);
     return commandResult.insertedId;
-}
-static async getUser(query) {
+  }
+
+  static async getUser(query) {
     const collection = dbClient.getCollection('users');
-    const user = await collection.find(query);
+    const user = await collection.find(query).toArray();
     return user;
-}
+  }
+
+  static async findOne(query) {
+    const collection = dbClient.getCollection('users');
+    const user = await collection.findOne(query);
+    return user;
+  }
 }
 
 export default UsersCollection;
